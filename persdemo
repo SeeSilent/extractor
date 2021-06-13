@@ -1,0 +1,442 @@
+#!/usr/bin/env node
+
+try{
+  if(process.argv[2] === '-c'){
+    console.log(process.argv[2] + 'your -c');
+
+    let fs = require('fs');
+      fs.readFile(process.argv[3], function (error, data) {
+      // 在这里就可以通过判断 error 来确认是否有错误发生
+      if (error) {
+        console.log('读取文件失败了,请输入文件完整路径')
+      } else {
+        let Tvalue = data.toString();
+   
+      let numberOfLetter = [0,0]; 
+      let numberOfOdds = [0,0];
+      let numberOfOddsShow = [0,0];
+  
+      function getTextvalue(){
+        let reg = /[A-Z]/g;
+        let toBig = Tvalue.toUpperCase();  // 定义存放大写字符串的变量
+        let chuli =  toBig.match(reg);  
+    
+        function apNumber (){   
+          console.log('提取字母执行');
+       
+            for(let j = 65;j<=90;j++){
+            let temp = 0;
+                for(let i = 0;i<chuli.length;i++){
+                    // console.log(i + '_ ' + j)
+                    if(chuli[i].charCodeAt() == j){   // charCodeAt() 方法 将字母转换为ASCII码 方便在下面进行比较
+                    temp ++; // 每次满足if条件，字母计数器 个数 ++
+                    }
+                }
+                numberOfLetter[j-65] = temp;
+      
+            }
+  
+        }
+        apNumber();  //执行apNumbber 函数
+    
+        function freNumber(){    
+          console.log('运算概率执行');
+         
+            for(let i = 65;i<=90;i++){
+           numberOfOdds[i-65] = (numberOfLetter[i-65]/chuli.length).toFixed(2);
+                numberOfOddsShow[i-65] = String.fromCharCode(i) + '---' + '出现次数:' +numberOfLetter[i-65] + '  -出现概率:'+ (numberOfLetter[i-65]/chuli.length).toFixed(2) ;
+            }
+          
+        }
+        freNumber(); // 执行freNumber() 函数
+       
+      }
+      function getTextToRank(){
+                console.log('排序执行');
+         
+              //冒泡排序法   没啥注释的
+                for (var j = 0; j <= 24; j++) {
+                       for(let i =0;i<=24;i++){
+                           if(numberOfOdds[i] < numberOfOdds[i+1] ){
+                                let temp = numberOfOdds[i] ;
+                                let temp2 = numberOfOddsShow[i];
+                                numberOfOdds[i] = numberOfOdds[i+1];
+                                numberOfOddsShow[i] = numberOfOddsShow[i+1];
+                                numberOfOdds[i+1] = temp;                  
+                                numberOfOddsShow[i+1] = temp2;
+                            }
+                            
+                      }
+                
+                   }
+           
+      }     
+      getTextvalue();
+      getTextToRank();
+      console.log(numberOfOddsShow);
+    
+      }})
+
+        
+  }
+
+
+  else if(process.argv[2] === '-f'){
+    let fs = require('fs');
+    fs.readFile(process.argv[3], function (error, data) {
+    // 在这里就可以通过判断 error 来确认是否有错误发生
+    if (error) {
+      console.log('读取文件失败了,请输入文件完整路径')
+    } else {
+     // your code
+     let Tvalue = data.toString();
+     let reg = /\b[A-z]\w+\b/g;
+     let str1 = Tvalue.match(reg);
+     // let str1 = ['this','is','a','IS','thIs','good123','GOod123']
+     str1.push('');
+
+     console.log('-f');
+     let strzi = []; //存单词
+     let strzishu = []; //存单词对应的数量
+ 
+     while(str1.length > 1){
+       // console.log(str1.length); //形象化
+       strzi.push(str1[0]) ; //push!
+       strzishu[strzi.length-1] = 1;
+      
+       for(let j = 1;j<str1.length-1;j++){
+         function text(w){
+           if(str1[0].toUpperCase() == str1[w].toUpperCase()){
+             strzishu[strzi.length-1] ++ ;        
+             str1.splice(w,1);
+             return text(w) //递归      
+           }
+         }
+         text(j);
+      
+
+       }
+         str1.splice(0,1);
+     }
+     // for(let m = 0;m<strzi.length;m++){
+     //   console.log(strzi[m] + ':' + strzishu[m]);
+     // }
+     for (var j = 0; j < strzishu.length; j++) {
+       for(let i =0;i<strzishu.length -j;i++){
+           if(strzishu[i] < strzishu[i+1] ){
+                let temp = strzishu[i] ;
+                strzishu[i] = strzishu[i+1];
+                strzishu[i+1] = temp;   
+
+                let temp2 = strzi[i];
+                strzi[i] = strzi[i+1];
+                strzi[i+1] = temp2;
+            }
+            
+      }
+
+   }
+
+   console.log(strzi);
+   console.log(strzishu);
+    }})
+  }
+
+
+  else if(process.argv[2] === '-n'&& (function(){
+    let reg = /[.]/g;
+    return reg.test(process.argv[3])
+  }())){
+    let fs = require('fs');
+  fs.readFile(process.argv[3], function (error, data) {
+  // 在这里就可以通过判断 error 来确认是否有错误发生
+  if (error) {
+    console.log('读取文件失败了,请输入文件完整路径')
+  } else {
+  // your code
+  let Tvalue = data.toString();
+  let reg = /\b[A-z]\w+\b/g;
+  let str1 = Tvalue.match(reg);
+  let str2 = Tvalue.match(reg);
+
+ console.log('-n');
+  // let str1 = ['this','is','a','IS','thIs','good123','GOod123']
+  str1.push('');
+
+
+  let strzi = []; //存单词
+  let strzishu = []; //存单词对应的数量
+  console.time();
+  while(str1.length > 1){
+    // console.log(str1.length); //形象化
+    strzi.push(str1[0]) ; //push!
+    strzishu[strzi.length-1] = 1;
+   
+    for(let j = 1;j<str1.length-1;j++){
+      function text(w){
+        if(str1[0].toUpperCase() == str1[w].toUpperCase()){
+          strzishu[strzi.length-1] ++ ;        
+          str1.splice(w,1);
+          return text(w) //递归      
+        }
+      }
+      text(j);
+   
+
+    }
+      str1.splice(0,1);
+  }
+  // for(let m = 0;m<strzi.length;m++){
+  //   console.log(strzi[m] + ':' + strzishu[m]);
+  // }
+  for (var j = 0; j < strzishu.length; j++) {
+    for(let i =0;i<strzishu.length -j;i++){
+        if(strzishu[i] < strzishu[i+1] ){
+             let temp = strzishu[i] ;
+             strzishu[i] = strzishu[i+1];
+             strzishu[i+1] = temp;   
+
+             let temp2 = strzi[i];
+             strzi[i] = strzi[i+1];
+             strzi[i+1] = temp2;
+         }
+         
+   }
+
+}
+
+
+let addsgailv = [];
+let showgailv = [];
+let shuzuchang = strzishu.length;
+let beichu = str2.length;
+
+for(let j = 0;j<shuzuchang;j++){
+  addsgailv[j] = (strzishu[j]/beichu).toFixed(4);
+  showgailv[j] = strzi[j] + ':' + addsgailv[j];
+}
+console.timeEnd();
+console.log(showgailv);
+
+  }})
+  }
+
+
+  else if(process.argv[2] === '-n' && (function(){
+    let reg = /[0-9]/g;
+    return reg.test(process.argv[3]);
+  }())){
+    let fs = require('fs');
+    fs.readFile(process.argv[4], function (error, data) {
+    // 在这里就可以通过判断 error 来确认是否有错误发生
+    if (error) {
+      console.log('读取文件失败了,请输入文件完整路径')
+    } else {
+    // your code
+    let Tvalue = data.toString();
+    let reg = /\b[A-z]\w+\b/g;
+    let str1 = Tvalue.match(reg);
+    let str2 = Tvalue.match(reg);
+  
+   console.log('-n number');
+    // let str1 = ['this','is','a','IS','thIs','good123','GOod123']
+    str1.push('');
+  
+  
+    let strzi = []; //存单词
+    let strzishu = []; //存单词对应的数量
+    console.time();
+    while(str1.length > 1){
+      // console.log(str1.length); //形象化
+      strzi.push(str1[0]) ; //push!
+      strzishu[strzi.length-1] = 1;
+     
+      for(let j = 1;j<str1.length-1;j++){
+        function text(w){
+          if(str1[0].toUpperCase() == str1[w].toUpperCase()){
+            strzishu[strzi.length-1] ++ ;        
+            str1.splice(w,1);
+            return text(w) //递归      
+          }
+        }
+        text(j);
+     
+  
+      }
+        str1.splice(0,1);
+    }
+    // for(let m = 0;m<strzi.length;m++){
+    //   console.log(strzi[m] + ':' + strzishu[m]);
+    // }
+    for (var j = 0; j < strzishu.length; j++) {
+      for(let i =0;i<strzishu.length -j;i++){
+          if(strzishu[i] < strzishu[i+1] ){
+               let temp = strzishu[i] ;
+               strzishu[i] = strzishu[i+1];
+               strzishu[i+1] = temp;   
+  
+               let temp2 = strzi[i];
+               strzi[i] = strzi[i+1];
+               strzi[i+1] = temp2;
+           }
+           
+     }
+  
+  }
+  
+  
+  let addsgailv = [];
+  let showgailv = [];
+  let shuzuchang = strzishu.length;
+  let beichu = str2.length;
+  
+  for(let j = 0;j<shuzuchang;j++){
+    addsgailv[j] = (strzishu[j]/beichu).toFixed(4);
+    showgailv[j] = strzi[j] + ':' + addsgailv[j];
+  }
+  console.timeEnd();
+  let array = [];
+  for(let i =0;i<process.argv[3] ;i++){
+    array[i] = showgailv[i];
+
+  }
+  console.log(array);
+  
+    }})
+  }
+
+  else if(process.argv[2] === '-x' && process.argv[4] === '-f'){
+
+  let tingci;
+  let str11;
+  let reg = /\b[A-z]\w+\b/g;
+
+  let fs = require('fs');
+  tingci = fs.readFileSync(process.argv[3],'utf8');
+
+  let fs1 = require('fs');
+  str11 = fs1.readFileSync(process.argv[5],'utf8');
+
+  let tingciV = tingci.match(reg);
+ 
+  let str1 = str11.match(reg);
+  let str2 = str11.match(reg);
+  
+
+
+ console.log('-x -f');
+  // let str1 = ['this','is','a','IS','thIs','good123','GOod123']
+  str1.push('');
+
+
+  let strzi = []; //存单词
+  let strzishu = []; //存单词对应的数量
+  console.time();
+  while(str1.length > 1){
+    // console.log(str1.length); //形象化
+    strzi.push(str1[0]) ; //push!
+    strzishu[strzi.length-1] = 1;
+   
+    for(let j = 1;j<str1.length-1;j++){
+      function text(w){
+        if(str1[0].toUpperCase() == str1[w].toUpperCase()){
+          strzishu[strzi.length-1] ++ ;        
+          str1.splice(w,1);
+          return text(w) //递归      
+        }
+      }
+      text(j);
+   
+
+    }
+      str1.splice(0,1);
+  }
+
+
+  // for(let m = 0;m<strzi.length;m++){
+  //   console.log(strzi[m] + ':' + strzishu[m]);
+  // }
+  for (var j = 0; j < strzishu.length; j++) {
+    for(let i =0;i<strzishu.length -j;i++){
+        if(strzishu[i] < strzishu[i+1] ){
+             let temp = strzishu[i] ;
+             strzishu[i] = strzishu[i+1];
+             strzishu[i+1] = temp;   
+
+             let temp2 = strzi[i];
+             strzi[i] = strzi[i+1];
+             strzi[i+1] = temp2;
+         }
+         
+   }
+
+}
+
+
+for(let i = 0;i<tingciV.length;i++){
+  let tempt = tingciV[i].toUpperCase();
+  for(let j =0;j<strzi.length ;j++){
+    let temps = strzi[j].toUpperCase();
+    if(tempt == temps){  
+      strzi.splice(j,1);
+      strzishu.splice(j,1);
+    }
+  }
+}
+
+let addsgailv = [];
+let showgailv = [];
+let shuzuchang = strzishu.length;
+let beichu = str2.length;
+
+for(let j = 0;j<shuzuchang;j++){
+  addsgailv[j] = (strzishu[j]/beichu).toFixed(4);
+  showgailv[j] = strzi[j] + ':' + addsgailv[j];
+}
+
+console.timeEnd();
+console.log(showgailv);
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+}catch(e){
+  if(e.message == 'The "path" argument must be of type string or an instance of Buffer or URL. Received undefined'){
+      console.log('参数错误 - 请查看下列参数')
+      console.log('-c <file name> --- 文件字母排序');
+      console.log('-f <file name> --- 文件不重复单词，并排序');
+      console.log('-n <filename> ---所有不重复单词频率');
+      console.log('-n <Number> <filename> ---前Number个出现次数最多的单词频率');
+  }
+  else{
+    console.log(e.name + ':' + e.message);
+  }
+  
+}
+
+
+
+
+
+
+// let fs = require('fs');
+// fs.readFile(process.argv[3], function (error, data) {
+// // 在这里就可以通过判断 error 来确认是否有错误发生
+// if (error) {
+//   console.log('读取文件失败了,请输入文件完整路径')
+// } else {
+//  // your code
+
+
+// }})
